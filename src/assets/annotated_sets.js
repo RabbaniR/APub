@@ -29,14 +29,16 @@ var AnnotatedBooks = {
     "initial_pages": AliceInWonderland,
     "annotation_sets": [
       AnnotatedSets[0],
-      AnnotatedSets[1]
+      AnnotatedSets[1],
+      [null, null, null, null]
     ]
   },
   "bob": {
     "meta": AliceMeta,
     "initial_pages": AliceInWonderland,
     "annotation_sets": [
-      AnnotatedSets[0]
+      AnnotatedSets[0],
+      [null, null, null, null]
     ]
   }
 }

@@ -11,7 +11,8 @@ function LStorage(book) {
     };
 
     this.updatePage = function(bookid, page, img) {
-  		this.allBooks[bookid].annotation_sets[0][page] = img;
+      var lng = this.allBooks[bookid].annotation_sets.length - 1;
+  		this.allBooks[bookid].annotation_sets[lng][page] = img;
       this.save();
   	};
 

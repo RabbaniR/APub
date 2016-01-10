@@ -36,7 +36,7 @@ function initializeEvents() {
 
    // Back and download
   $("#back").click(function() {
-    window.location = "/";
+    window.location = "/APub/";
   });
 
   $('#download').attr( "download", BookId + ".apub.json" );

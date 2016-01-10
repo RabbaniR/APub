@@ -1,6 +1,15 @@
 var AnnotatedSets = {};
 
 
+var Storage = {
+  save: function(book, page, data) {
+
+  },
+  load: function(book, page) {
+    
+  }
+}
+
 
 AnnotatedSets["alice"] = {
     "metadata" : {

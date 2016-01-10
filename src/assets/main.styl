@@ -12,9 +12,10 @@ body {
   font-family: "Helvetica";
   text-align: center;
   // padding: 50px 20px 0;
-  background: #B1AE9D;
+  background: #DCC890;
+  background-image: url("./white-leather.png")
   color: #444;
-  margin: 0;
+  margin-bottom: 40px;
 }
 
 .fullscreen {
@@ -22,7 +23,56 @@ body {
   margin: 0 auto;
   left: 0;
   right: 0;
+  top: 80px;
+  border-radius: 3px;
   &:first-child {
-    background: #fff;
+    background: hsla(44,20%,98%,1);
+    margin-bottom: 40px;
+    background-image: url("./notebook.png")
+    box-shadow:
+      1px 1px   0 rgba(0,   0,   0,   0.100),
+      2px 1px   0 hsla(44,51%,98%,1),
+      3px 1px   0 rgba(0,   0,   0,   0.125),
+      4px 1px   0 hsla(44,51%,98%,1),
+      5px 2px   0 rgba(0,   0,   0,   0.125);
   }
+}
+
+#nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  height: 80px;
+  width: 740px;
+  margin: 0 auto;
+}
+
+.click {
+  cursor: pointer;
+}
+
+.dot {
+  margin: 0 5px;
+  height: 20px;
+  width: 20px;
+  border-radius: 2px;
+  &.red {
+    background: red;
+  }
+  &.black {
+    background: black;
+  }
+}
+
+
+
+.button {
+  cursor: pointer;
+  height: 40px;
+  padding: 0 10px;
+  margin: 0 10px;
+  background: brown;
+  border-radius: 5px;
+  color: #fff;
 }

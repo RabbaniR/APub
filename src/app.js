@@ -9,21 +9,42 @@ function initializeRoutes() {
 }
 
 function initializeEvents() {
-  // Window resize
   $( window ).resize(function() {
-    // TODO BUG this causes canvas text to disappear
     //resizeEveryCanvas();
   });
+
+  $(window).keyup(function(ev) {
+      var hash = window.location.hash.split('/');
+      var bookid = hash[1];
+      var page = parseInt(hash[2]);
+      var book_length = AnnotatedSets[bookid].initial_pages.length;
+
+      switch(ev.keyCode) {
+        // left
+        case 37:
+          if (page > 0) {
+            loadPage(page - 1);
+          }
+          break;
+
+        //right
+        case 39:
+          if (page < book_length - 1) {
+            loadPage(page + 1);
+          }
+          break;
+      }
+
+
+   });
+
 }
-
-
-//function loadTextToCanvas() {}
 
 function resizeCanvas(id) {
   var canvas = id ? $('canvas#'+ id) : $('canvas');
   canvas.map(function(i, el){
-    el.height = $(window).height();
-    el.width = 700;
+    el.width = 740;
+    el.height = 800;
   });
 }
 
@@ -33,52 +54,61 @@ function addCanvas(id) {
   return document.getElementById(id);
 }
 
-function loadBook(book, page) {
-  console.log("load book: " + book + page);
+function loadBook(bookid, page) {
   $('#app').empty();
-
-  var text = AnnotatedSets[book].initial_pages[page];
+  var book = AnnotatedSets[bookid];
+  var text = book.initial_pages[page];
   loadTextToCanvas(text);
 
-  //loadHistoryLayer();
+  book.annotation_sets.map(function(set, i){
+    if (set.annotated_pages[page]) {
+      loadHistoryLayer(level, set.annotated_pages[page]);
+    }
+  });
 
   loadAnnotationLayer();
 }
 
 function loadTextToCanvas(text) {
   var canvas = addCanvas("Text");
-
   CanvasTextWrapper(canvas, text, {
 		font: '16px Helvetica, sans-serif',
-		verticalAlign: 'middle',
-    textAlign: 'center',
-    justifyLines: true,
+		verticalAlign: 'top',
+    paddingX: 105,
+    paddingY: 40,
 		allowNewLine: true,
 		lineHeight: '150%'
 	});
 }
 
-function loadHistoryLayer(level, image) {
+function loadHistoryLayer(level, data) {
   var canvas = addCanvas("Layer" + level);
+  var context = canvas.getContext("2d");
 
+  context.putImageData(data, 0, 0);
 }
 
 function loadAnnotationLayer() {
   var canvas = addCanvas("Sketch");
   $(canvas).sketch();
+  $(canvas).sketch('size', 1);
 
 }
 
+function saveAnnotations() {
+  var canvas = document.getElementById("Sketch");
+  var context = canvas.getContext("2d");
+  var data = context.getImageData(0, 0, canvas.width, canvas.height);
 
-// loadPreviousPage()
-// loadNextPage()
+  return data;
+}
 
 
+function loadPage(page) {
+  var hash = window.location.hash.split('/');
 
-// Annotating UI
-// chooseColor()
-// chooseSize()
-// clearA()
+  window.location.hash = '#/' + hash[1] + '/' + page;
+}
 
 
 

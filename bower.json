@@ -6,14 +6,10 @@
   "moduleType": [],
   "license": "",
   "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
   "dependencies": {
-    "literallycanvas": "~0.4.11"
+    "jquery": "~2.2.0",
+    "canvas-text-wrapper": "~0.5.1",
+    "sketch.js-2": "*",
+    "director": "~1.2.8"
   }
 }

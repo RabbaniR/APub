@@ -1,4 +1,14 @@
-// Functions
+// Global vars
+var BookId;
+var Page;
+var BookStorage;
+var Book;
+
+// Initialize
+$(document).ready(function() {
+    initializeRoutes();
+});
+
 
 function initializeRoutes() {
   var routes = {
@@ -9,44 +19,57 @@ function initializeRoutes() {
 }
 
 function initializeEvents() {
-  $( window ).resize(function() {
-    //resizeEveryCanvas();
-  });
-
+  // Arrow navigation
   $(window).keyup(function(ev) {
-      var hash = window.location.hash.split('/');
-      var bookid = hash[1];
-      var page = parseInt(hash[2]);
-      var book_length = AnnotatedSets[bookid].initial_pages.length;
+      var book_length = Book.initial_pages.length;
 
       switch(ev.keyCode) {
-        // left
-        case 37:
-          if (page > 0) {
-            loadPage(page - 1);
-          }
+        case 37: //left
+          if (Page > 0) { loadPage(Page - 1); }
           break;
 
-        //right
-        case 39:
-          if (page < book_length - 1) {
-            loadPage(page + 1);
-          }
+        case 39: //right
+          if (Page < book_length - 1) { loadPage(Page + 1); }
           break;
       }
-
-
    });
 
+   // Back and download
+  $("#back").click(function() {
+    window.location = "/";
+  });
+
+  $('#download').attr( "download", BookId + ".apub.json" );
+  $('#download').attr( "href", "data:text," + JSON.stringify(BookStorage.load(BookId)));
+
+  // Listen for clicks and save
+  $('#Sketch').bind( "mouseup touchend", function() {
+    saveAnnotations();
+  });
+
 }
 
-function resizeCanvas(id) {
-  var canvas = id ? $('canvas#'+ id) : $('canvas');
-  canvas.map(function(i, el){
-    el.width = 740;
-    el.height = 800;
+
+function loadBook(bookid, page) {
+  BookId = bookid;
+  Page = parseInt(page);
+  BookStorage = new LStorage(BookId);
+  Book = BookStorage.load(BookId);
+
+  $('#app').empty();
+  var text = Book.initial_pages[Page];
+  loadTextToCanvas(text);
+  Book.annotation_sets.map(function(set, i){
+    if (set[Page]) {
+      loadHistoryLayer(i, set[Page]);
+    }
   });
+
+  loadAnnotationLayer();
+
+  initializeEvents();
 }
+
 
 function addCanvas(id) {
   $('#app').append('<canvas id="' + id + '" class="fullscreen"></canvas>');
@@ -54,30 +77,24 @@ function addCanvas(id) {
   return document.getElementById(id);
 }
 
-function loadBook(bookid, page) {
-  $('#app').empty();
-  var book = AnnotatedSets[bookid];
-  var text = book.initial_pages[page];
-  loadTextToCanvas(text);
 
-  book.annotation_sets.map(function(set, i){
-    if (set.annotated_pages[page]) {
-      loadHistoryLayer(level, set.annotated_pages[page]);
-    }
+function resizeCanvas(id) {
+  var canvas = id ? $('canvas#'+ id) : $('canvas');
+  canvas.map(function(i, el){
+    el.width = 740;
+    el.height = 860;
   });
-
-  loadAnnotationLayer();
 }
 
 function loadTextToCanvas(text) {
   var canvas = addCanvas("Text");
   CanvasTextWrapper(canvas, text, {
-		font: '16px Helvetica, sans-serif',
+		font: '18px TimesNewRoman, serif',
 		verticalAlign: 'top',
-    paddingX: 105,
-    paddingY: 40,
+    paddingX: 100,
+    paddingY: 60,
 		allowNewLine: true,
-		lineHeight: '150%'
+		lineHeight: '200%'
 	});
 }
 
@@ -85,7 +102,9 @@ function loadHistoryLayer(level, data) {
   var canvas = addCanvas("Layer" + level);
   var context = canvas.getContext("2d");
 
-  context.putImageData(data, 0, 0);
+  var drawing = new Image();
+  drawing.src = data;
+  context.drawImage(drawing,0,0);
 }
 
 function loadAnnotationLayer() {
@@ -98,26 +117,12 @@ function loadAnnotationLayer() {
 function saveAnnotations() {
   var canvas = document.getElementById("Sketch");
   var context = canvas.getContext("2d");
-  var data = context.getImageData(0, 0, canvas.width, canvas.height);
+  var img = canvas.toDataURL("image/png");
 
-  return data;
+  BookStorage.updatePage(BookId, Page, img);
 }
 
 
 function loadPage(page) {
-  var hash = window.location.hash.split('/');
-
-  window.location.hash = '#/' + hash[1] + '/' + page;
+  window.location.hash = '#/' + BookId + '/' + page;
 }
-
-
-
-
-// Initialize
-$(document).ready(function() {
-    console.log( "ready!" );
-    initializeRoutes();
-    initializeEvents();
-
-
-});
